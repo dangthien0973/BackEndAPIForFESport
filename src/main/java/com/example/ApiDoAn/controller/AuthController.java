@@ -180,21 +180,8 @@ public class AuthController {
 	// làm lại theo hướng để hiểu
 	@PostMapping("/signup")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterReq signUpRequest) {
-		PermissionEntity t1=new PermissionEntity(3,"admin");
-		PermissionEntity t2=new PermissionEntity(2,"user");
-		/* PermissionEntity t3=new PermissionEntity(1,"mod"); */
-		per.save(t1);
-		per.save(t2);
-		/* per.save(t3); */
-		Set<PermissionEntity> testset =new HashSet<PermissionEntity>();
-		testset.add(t1);
-		testset.add(t2);
-		/* testset.add(t3); */
-		
-		RoleEntity r11 =new RoleEntity();
-		r11.setPermissions(testset);
-		r11.setName("admin");
-		roleRepository.save(r11);
+		   RoleEntity roletest = roleRepository.findByName("ROLE_USER").get();
+		   System.err.println(roletest.toString());
         if (userRepository.existsByUserName(signUpRequest.getUserName())) {
             return ResponseEntity
                     .badRequest()
@@ -212,10 +199,10 @@ public class AuthController {
 
         Set<String> asignRoles = signUpRequest.getRole();
         Set<RoleEntity> roles = new HashSet();
-
+      
         // Nếu không truyền thì set role mặc định là ROLE_USER
         if (asignRoles == null) {
-            RoleEntity userRole = roleRepository.findByName(ERole.ROLE_USER)
+            RoleEntity userRole = roleRepository.findByName("ROLE_USER")
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(userRole);
         } 
@@ -223,7 +210,7 @@ public class AuthController {
             asignRoles.forEach(role -> {
                 switch (role) {
                     case "admin":
-                        RoleEntity adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                        RoleEntity adminRole = roleRepository.findByName("ROLE_ADMIN")
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(adminRole);
 
@@ -242,11 +229,29 @@ public class AuthController {
                 }
             });
         }
-    
         user.setRoles(roles);
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageReponse("User registered successfully!"));
     }
+	 @PostMapping("/signin")
+	    public ResponseEntity<?> login(@Valid @RequestBody LoginReq loginRequest) {
+	        Authentication authentication = authenticationManager.authenticate(
+	                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+	        String jwt = jwtUtils.generateJwtToken(userDetails);
+
+	        List<String> roles = userDetails.getAuthorities().stream()
+	                .map(item -> item.getAuthority())
+	                .collect(Collectors.toList());
+
+	        return ResponseEntity.ok(new JwtResponse(0, jwt,
+	                userDetails.getUsername(),
+	                null, userDetails.getUsername(),
+	                userDetails.getEmail(),
+	                roles));
+	    }
 
 }

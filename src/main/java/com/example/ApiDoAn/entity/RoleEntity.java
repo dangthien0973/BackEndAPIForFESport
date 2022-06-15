@@ -63,8 +63,6 @@ public class RoleEntity extends BaseEntity {
 		this.permissions = permissions;
 	}
     
-    
-
     // getter/setter
     
 }
