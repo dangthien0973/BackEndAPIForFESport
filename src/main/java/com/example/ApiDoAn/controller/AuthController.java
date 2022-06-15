@@ -29,10 +29,12 @@ import com.example.ApiDoAn.request.RegisterReq;
 import com.example.ApiDoAn.request.ResetPasswordRequest;
 import com.example.ApiDoAn.request.TokenRefreshReq;
 import com.example.ApiDoAn.request.VerifyCodeReq;
-import com.example.ApiDoAn.security.CustomUserDetails;
+
 import com.example.ApiDoAn.security.RefreshTokenService;
+import com.example.ApiDoAn.security.jwt.JwtUtils;
+import com.example.ApiDoAn.security.services.UserDetailsImpl;
 import com.example.ApiDoAn.service.IUserService;
-import com.example.ApiDoAn.until.JwtUtils;
+
 
 import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
@@ -68,25 +70,7 @@ public class AuthController {
 	    PasswordEncoder encoder;
 		@Autowired
 		Permissionreponsitory per;
-	@PostMapping("/login")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginReq LoginReq, HttpServletResponse response) {
-		Authentication authentication = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(LoginReq.getUsername(), LoginReq.getPassword()));
 
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-		String jwt = jwtUtils.generateJwtToken(userDetails);
-
-		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
-				.collect(Collectors.toList());
-		RefreshTokenEntity refreshToken = refreshTokenService.finByIdUserEntity(userDetails.getId());
-
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(new JwtResponse(HttpStatus.OK.value(), jwt, refreshToken.getToken(), userDetails.getId(),
-						userDetails.getUsername(), userDetails.getEmail(), roles));
-	}
 
 	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterReq RegisterReq)
@@ -177,6 +161,7 @@ public class AuthController {
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successful!", ""));
 
 	}
+	
 	// làm lại theo hướng để hiểu
 	@PostMapping("/signup")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterReq signUpRequest) {
@@ -234,24 +219,22 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageReponse("User registered successfully!"));
     }
-	 @PostMapping("/signin")
-	    public ResponseEntity<?> login(@Valid @RequestBody LoginReq loginRequest) {
-	        Authentication authentication = authenticationManager.authenticate(
-	                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-	        SecurityContextHolder.getContext().setAuthentication(authentication);
-	        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-	        String jwt = jwtUtils.generateJwtToken(userDetails);
+	  @PostMapping("/signin")
+	  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginReq loginRequest) {
 
-	        List<String> roles = userDetails.getAuthorities().stream()
-	                .map(item -> item.getAuthority())
-	                .collect(Collectors.toList());
+	    Authentication authentication = authenticationManager.authenticate(
+	        new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-	        return ResponseEntity.ok(new JwtResponse(0, jwt,
-	                userDetails.getUsername(),
-	                null, userDetails.getUsername(),
-	                userDetails.getEmail(),
-	                roles));
-	    }
+	    SecurityContextHolder.getContext().setAuthentication(authentication);
+	    String jwt = jwtUtils.generateJwtToken(authentication);
+	    
+	    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();    
+	    List<String> roles = userDetails.getAuthorities().stream()
+	        .map(item -> item.getAuthority())
+	        .collect(Collectors.toList());
+	    return ResponseEntity.status(HttpStatus.OK).body(new JwtResponse(HttpStatus.OK.value(),jwt, jwt, userDetails.getId(),
+                userDetails.getUsername(), userDetails.getEmail(), roles));
 
+	  }
 }
