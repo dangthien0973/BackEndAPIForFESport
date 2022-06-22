@@ -7,7 +7,10 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,4 +21,7 @@ import javax.persistence.Table;
 public class ImageEntity extends BaseEntity {
     @Column
     private String url;
+    @ManyToOne
+    @JoinColumn(name = "productId",referencedColumnName = "id")
+    ProductEntity productEntity;
 }

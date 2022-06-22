@@ -70,15 +70,6 @@ public class AuthController {
 	    PasswordEncoder encoder;
 		@Autowired
 		Permissionreponsitory per;
-
-
-	@PostMapping("/register")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterReq RegisterReq)
-			throws MessagingException, IOException {
-		String result = iUserService.registerUser(RegisterReq);
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(200, result, ""));
-	}
-
 	@PostMapping(value = "/registerEmail")
 	public ResponseEntity<?> registerEmail(@Valid @RequestBody RegisterEmail registerEmail)
 			throws MessagingException, IOException {

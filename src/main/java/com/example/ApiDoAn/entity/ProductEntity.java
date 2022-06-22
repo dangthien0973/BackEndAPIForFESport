@@ -1,5 +1,6 @@
 package com.example.ApiDoAn.entity;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,6 @@ public class ProductEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "categoryId")
     private CategoryEntity categoryEntity;
-
-
-
+    @OneToMany(mappedBy = "productEntity",cascade = CascadeType.ALL)
+    private List<ImageEntity> ImageEntity;
 }

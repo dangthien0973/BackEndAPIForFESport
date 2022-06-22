@@ -29,7 +29,7 @@ public class SendEmailUtils {
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         String toAddress = user.getEmail();
         String fromAddress = "damvannanh@gmail.com";
-        String senderName = "Hoàng Văn hiệp";
+        String senderName = "Nguyễn Đăng Thiện";
         String subject = "Please verify your registration";
 
         String content = "<p> Dear " + user.getUserName() + ",</p>" + "<br>"
@@ -39,7 +39,7 @@ public class SendEmailUtils {
                 + "Thank you,<br>"
                 + "Your company hoanghiep.";
         helper.setFrom(fromAddress, senderName);
-        helper.setTo("cubom234@gmail.com");
+        helper.setTo(toAddress);
 
         helper.setSubject(subject);
         int verifyURL = verify;
@@ -51,10 +51,7 @@ public class SendEmailUtils {
         // true = text/html
         helper.setText(content, true);
 
-        // hard coded a file path
-        FileSystemResource file = new FileSystemResource(new File("path/android.png"));
-
-        helper.addAttachment("an.png", new ClassPathResource("an.png"));
+     
 
         javaMailSender.send(msg);
 
