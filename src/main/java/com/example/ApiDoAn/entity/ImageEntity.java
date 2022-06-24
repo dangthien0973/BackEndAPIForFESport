@@ -24,4 +24,17 @@ public class ImageEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "productId",referencedColumnName = "id")
     ProductEntity productEntity;
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public ProductEntity getProductEntity() {
+		return productEntity;
+	}
+	public void setProductEntity(ProductEntity productEntity) {
+		this.productEntity = productEntity;
+	}
+    
 }

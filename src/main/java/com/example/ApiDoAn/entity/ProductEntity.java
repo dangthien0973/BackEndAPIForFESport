@@ -42,4 +42,71 @@ public class ProductEntity extends BaseEntity {
     private CategoryEntity categoryEntity;
     @OneToMany(mappedBy = "productEntity",cascade = CascadeType.ALL)
     private List<ImageEntity> ImageEntity;
+	public int getPrice() {
+		return Price;
+	}
+	public void setPrice(int price) {
+		Price = price;
+	}
+	public int getPrice_Sale() {
+		return Price_Sale;
+	}
+	public void setPrice_Sale(int price_Sale) {
+		Price_Sale = price_Sale;
+	}
+	public int getAmount() {
+		return amount;
+	}
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+	public boolean isNew() {
+		return isNew;
+	}
+	public void setNew(boolean isNew) {
+		this.isNew = isNew;
+	}
+	public String getSourceOrigin() {
+		return sourceOrigin;
+	}
+	public void setSourceOrigin(String sourceOrigin) {
+		this.sourceOrigin = sourceOrigin;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDescriptions() {
+		return descriptions;
+	}
+	public void setDescriptions(String descriptions) {
+		this.descriptions = descriptions;
+	}
+	public Date getImportDate() {
+		return importDate;
+	}
+	public void setImportDate(Date importDate) {
+		this.importDate = importDate;
+	}
+	public Date getExpiryDate() {
+		return expiryDate;
+	}
+	public void setExpiryDate(Date expiryDate) {
+		this.expiryDate = expiryDate;
+	}
+	public CategoryEntity getCategoryEntity() {
+		return categoryEntity;
+	}
+	public void setCategoryEntity(CategoryEntity categoryEntity) {
+		this.categoryEntity = categoryEntity;
+	}
+	public List<ImageEntity> getImageEntity() {
+		return ImageEntity;
+	}
+	public void setImageEntity(List<ImageEntity> imageEntity) {
+		ImageEntity = imageEntity;
+	}
+    
 }
