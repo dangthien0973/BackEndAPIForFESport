@@ -12,6 +12,13 @@ public List<Integer> lstSize;
 public List<Integer> lstgender;
 public int pageIndex;
 public int pageSize;
+public String keyWord;
+public String getKeyWord() {
+	return keyWord;
+}
+public void setKeyWord(String keyWord) {
+	this.keyWord = keyWord;
+}
 public double getPriceFrom() {
 	return priceFrom;
 }
