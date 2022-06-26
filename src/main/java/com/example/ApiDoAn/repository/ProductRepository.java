@@ -14,12 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<ProductEntity,Long>, JpaSpecificationExecutor, PagingAndSortingRepository<ProductEntity, Long>  {
-        Optional<ProductEntity> findById(Long id);
-        Page<ProductEntity> findAll(Pageable pageable);
-        @Query("SELECT u FROM ProductEntity  u  WHERE u.categoryEntity.id IN (:lstCateGoryID) and u.name LIKE %:keyword% ")
-        Page <ProductEntity>  filterProduct(
-          @Param("lstCateGoryID")List<Long> lstCateGory,
-          @Param("keyword") String  keyword,
-          Pageable pageable);
+public interface ProductRepository extends JpaRepository<ProductEntity, Long>, PagingAndSortingRepository<ProductEntity, Long> {
+	Optional<ProductEntity> findById(Long id);
+	Page<ProductEntity> findAll(Pageable pageable);
+	@Query("SELECT u FROM ProductEntity  u  WHERE u.categoryEntity.id IN (:lstCateGoryID)  ")
+	Page<ProductEntity> filterProduct(@Param("lstCateGoryID") List<Long> lstCateGory, Pageable pageable);
+	@Query("SELECT p FROM ProductEntity p WHERE UPPER(p.name) LIKE CONCAT('%',UPPER(:keyWord),'%')")
+	Page<ProductEntity> search(@Param("keyWord") String keyword, Pageable pageable);
 }

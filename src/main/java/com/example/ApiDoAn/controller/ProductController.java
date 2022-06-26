@@ -21,6 +21,7 @@ import com.example.ApiDoAn.repository.ProductRepository;
 import com.example.ApiDoAn.request.ProductFilterRequest;
 import com.example.ApiDoAn.request.content;
 import com.example.ApiDoAn.service.IProductService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,8 +43,10 @@ public class ProductController {
 //	@Autowired
 //	IProductService iProductService;
 	@Autowired
+	@JsonIgnore
 	ProductRepository productRepository;
 	@Autowired
+	@JsonIgnore
 	CategoryRepository categoryRepository;
 
 	@GetMapping("/product-detail/{productId}")
@@ -51,35 +54,11 @@ public class ProductController {
 		Optional<ProductEntity> result = productRepository.findById(productId);
 		if (result == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body(new ResponseObject(HttpStatus.NOT_FOUND.value(),"Not found product", ""));
+					.body(new ResponseObject(HttpStatus.NOT_FOUND.value(), "Not found product", ""));
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseObject(HttpStatus.OK.value(), "product detail", result));
 
-	}
-	// Thiện filter Product
-	@PostMapping("filterProduct")
-	public ResponseEntity<?> filterProduct(@Valid @RequestBody ProductFilterRequest request) {
-		// khởi tạo đối tượng
-		ArrayList<Long> listCateGoryProduct = new ArrayList<Long>();
-		int pageIndex = request.pageIndex;
-		int pageSize = request.pageSize;
-		// nếu không truyền category thì cũng mặc định lấy hết category lên để xét
-		if (request.lstCateGory == null) {
-			// lấy hết category 3 từ database lên
-
-			List<CategoryEntity> listCategory = categoryRepository.findAll();
-			for (CategoryEntity categoryEntity : listCategory) {
-				;
-				System.err.println(categoryEntity.getId());
-				listCateGoryProduct.add(categoryEntity.getId());
-			}
-			request.lstCateGory = listCateGoryProduct;
-		}
-
-		Pageable pageable = PageRequest.of(pageIndex, pageSize);
-		Page<ProductEntity> lstProduct = productRepository.filterProduct(request.lstCateGory, request.keyWord, pageable);
-		return ResponseEntity.status(HttpStatus.OK).body(lstProduct);
 	}
 	// pending
 	@GetMapping("/toolcrawlData")
@@ -96,15 +75,12 @@ public class ProductController {
 	}
 
 	// tool crawl data đơn giản để test thôi !
-
 	@PostMapping("/toolsaveProduct")
 	public ResponseEntity<?> saveProduct() {
-		
-		
 		Date dt = new Date(2022, 6, 4);
 		for (int i = 0; i < 10; i++) {
 			CategoryEntity category = new CategoryEntity();
-			
+
 			List<ImageEntity> list = new ArrayList<ImageEntity>();
 			ImageEntity imageEntity = new ImageEntity();
 			String url = "https://tdtt.gov.vn//Portals/0/EasyGalleryImages/2/1320/IMG_2888.JPG";
@@ -113,7 +89,7 @@ public class ProductController {
 			ProductEntity etitry = new ProductEntity();
 			etitry.setAmount(2000);
 			etitry.setName("Tin tức thể thao test");
-			
+
 			etitry.setPrice(20000);
 			etitry.setPrice_Sale(200);
 
@@ -130,15 +106,49 @@ public class ProductController {
 			ProductEntity etitry = new ProductEntity();
 			etitry.setAmount(2000);
 			etitry.setName("Tin tức thể thao test 2");
-			
+
 			etitry.setPrice(20000);
 			etitry.setPrice_Sale(200);
 			etitry.setImportDate(dt);
 			etitry.setImageEntity(list);
 			productRepository.save(etitry);
 		}
-
 		return ResponseEntity.status(HttpStatus.OK).body("successly!");
-
 	}
+	// hàm search Product
+	@PostMapping("SearchProduct")
+	public ResponseEntity<?> SearchProduct(@RequestParam(required = true) String searchValue,
+	   @RequestParam(defaultValue = "0") int pageIndex,  @RequestParam(defaultValue = "10") int pageSize) {
+		 Pageable pageable = PageRequest.of(pageIndex,pageSize);
+         String param = searchValue;
+     	System.err.println(param);
+         Page<ProductEntity> result = productRepository.search(param, pageable);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result));
+	}
+
+	// Thiện filter Product
+	@PostMapping("filterProduct")
+	public ResponseEntity<?> filterProduct(@Valid @RequestBody ProductFilterRequest request) {
+		// khởi tạo đối tượng
+		ArrayList<Long> listCateGoryProduct = new ArrayList<Long>();
+		int pageIndex = request.pageIndex;
+		int pageSize = request.pageSize;
+		// nếu không truyền category thì cũng mặc định lấy hết category lên để xét
+		if (request.lstCateGory == null) {
+			// lấy hết category 3 từ database lên
+			List<CategoryEntity> listCategory = categoryRepository.findAll();
+			for (CategoryEntity categoryEntity : listCategory) {
+				;
+				System.err.println(categoryEntity.getId());
+				listCateGoryProduct.add(categoryEntity.getId());
+			}
+			request.lstCateGory = listCateGoryProduct;
+		}
+
+		Pageable pageable = PageRequest.of(pageIndex, pageSize);
+		Page<ProductEntity> lstProduct = productRepository.filterProduct(request.lstCateGory, pageable);
+		return ResponseEntity.status(HttpStatus.OK).body(lstProduct);
+	}
+
 }
