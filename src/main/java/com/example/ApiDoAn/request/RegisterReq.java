@@ -9,12 +9,16 @@ import lombok.Setter;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@CrossOrigin
 public class RegisterReq {
     @NotBlank
     private String userName;

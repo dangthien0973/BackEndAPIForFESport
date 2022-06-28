@@ -21,12 +21,7 @@ import java.util.Set;
 @Table(name = "product")
 
 public class ProductEntity extends BaseEntity {
-	@Column
-	private int Price;
-	@Column
-	private int Price_Sale;
-	@Column
-	private int amount;
+	
 	@Column
 	private boolean isNew;
 	@Column
@@ -47,29 +42,7 @@ public class ProductEntity extends BaseEntity {
 	@OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
 	private List<ImageEntity> ImageEntity;
 
-	public int getPrice() {
-		return Price;
-	}
-
-	public void setPrice(int price) {
-		Price = price;
-	}
-
-	public int getPrice_Sale() {
-		return Price_Sale;
-	}
-
-	public void setPrice_Sale(int price_Sale) {
-		Price_Sale = price_Sale;
-	}
-
-	public int getAmount() {
-		return amount;
-	}
-
-	public void setAmount(int amount) {
-		this.amount = amount;
-	}
+	
 
 	public boolean isNew() {
 		return isNew;

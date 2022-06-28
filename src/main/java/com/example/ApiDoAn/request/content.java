@@ -5,9 +5,7 @@ import java.util.List;
 import javax.mail.FetchProfile.Item;
 
 public class content {
-	public List<String> content;
+	public List<Detail> content;
 
-
-	
 }
 

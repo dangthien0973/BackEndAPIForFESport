@@ -18,6 +18,8 @@ import com.example.ApiDoAn.reponse.ProductResponse;
 import com.example.ApiDoAn.reponse.ResponseObject;
 import com.example.ApiDoAn.repository.CategoryRepository;
 import com.example.ApiDoAn.repository.ProductRepository;
+import com.example.ApiDoAn.request.Detail;
+import com.example.ApiDoAn.request.DetailItem;
 import com.example.ApiDoAn.request.ProductFilterRequest;
 import com.example.ApiDoAn.request.content;
 import com.example.ApiDoAn.service.IProductService;
@@ -67,10 +69,21 @@ public class ProductController {
 		RestTemplate restTemplate = new RestTemplate();
 		String result = restTemplate.getForObject(uri, String.class);
 		// lấy kết quả parseto ojbject trả về dùng objectMapper để trả về kết quả
-
 		ObjectMapper objectMapper = new ObjectMapper();
 		content data = objectMapper.readValue(result, content.class);
-		System.err.println(data.toString());
+		List<Detail> detail = data.content;
+		Detail detailFirst = detail.get(0);
+		List<DetailItem> detailItem = detailFirst.items;
+		for(DetailItem item :  detailItem) {
+			List<ImageEntity> list = new ArrayList<ImageEntity>();
+			ImageEntity imageEntity = new ImageEntity();
+			ProductEntity etitry = new ProductEntity();
+			String urlImge = item.download_url;
+			imageEntity.setUrl(urlImge);
+			list.add(imageEntity);
+			etitry.setName(item.title);
+		}
+		
 		return ResponseEntity.status(HttpStatus.OK).body("successly!");
 	}
 
@@ -87,11 +100,10 @@ public class ProductController {
 			imageEntity.setUrl(url);
 			list.add(imageEntity);
 			ProductEntity etitry = new ProductEntity();
-			etitry.setAmount(2000);
+			
 			etitry.setName("Tin tức thể thao test");
 
-			etitry.setPrice(20000);
-			etitry.setPrice_Sale(200);
+
 
 			etitry.setImportDate(dt);
 			etitry.setImageEntity(list);
@@ -104,18 +116,17 @@ public class ProductController {
 			imageEntity.setUrl(url);
 			list.add(imageEntity);
 			ProductEntity etitry = new ProductEntity();
-			etitry.setAmount(2000);
+		
 			etitry.setName("Tin tức thể thao test 2");
 
-			etitry.setPrice(20000);
-			etitry.setPrice_Sale(200);
+
 			etitry.setImportDate(dt);
 			etitry.setImageEntity(list);
 			productRepository.save(etitry);
 		}
 		return ResponseEntity.status(HttpStatus.OK).body("successly!");
 	}
-	// hàm search Product
+//
 	@PostMapping("SearchProduct")
 	public ResponseEntity<?> SearchProduct(@RequestParam(required = true) String searchValue,
 	   @RequestParam(defaultValue = "0") int pageIndex,  @RequestParam(defaultValue = "10") int pageSize) {
