@@ -29,8 +29,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.sql.Date;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,7 @@ public class ProductController {
 	public ResponseEntity<?> toolsaveProduct() throws IOException {
 		String uri = "https://tdtt.gov.vn/DesktopModules/EasyDnnGallery/ChameleonGalleryService.ashx?tabid=162&fullscreen=false&mid=5402&portal_id=0&locale=vi-VN&article_id=0&html5_player=1&_=1655312608106";
 		RestTemplate restTemplate = new RestTemplate();
+		Date dt=new Date();
 		String result = restTemplate.getForObject(uri, String.class);
 		// lấy kết quả parseto ojbject trả về dùng objectMapper để trả về kết quả
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -75,57 +77,23 @@ public class ProductController {
 		Detail detailFirst = detail.get(0);
 		List<DetailItem> detailItem = detailFirst.items;
 		for(DetailItem item :  detailItem) {
-			List<ImageEntity> list = new ArrayList<ImageEntity>();
+			List<ImageEntity> listImage = new ArrayList<ImageEntity>();
 			ImageEntity imageEntity = new ImageEntity();
-			ProductEntity etitry = new ProductEntity();
+			ProductEntity product = new ProductEntity();
 			String urlImge = item.download_url;
 			imageEntity.setUrl(urlImge);
-			list.add(imageEntity);
-			etitry.setName(item.title);
-		}
-		
-		return ResponseEntity.status(HttpStatus.OK).body("successly!");
-	}
-
-	// tool crawl data đơn giản để test thôi !
-	@PostMapping("/toolsaveProduct")
-	public ResponseEntity<?> saveProduct() {
-		Date dt = new Date(2022, 6, 4);
-		for (int i = 0; i < 10; i++) {
-			CategoryEntity category = new CategoryEntity();
-
-			List<ImageEntity> list = new ArrayList<ImageEntity>();
-			ImageEntity imageEntity = new ImageEntity();
-			String url = "https://tdtt.gov.vn//Portals/0/EasyGalleryImages/2/1320/IMG_2888.JPG";
-			imageEntity.setUrl(url);
-			list.add(imageEntity);
-			ProductEntity etitry = new ProductEntity();
+			listImage.add(imageEntity);
+			product.setName(item.title);
+			product.setDescriptions(item.title);
+			product.setImportDate(dt);
+			product.setImageEntity(listImage);
+			productRepository.save(product);
 			
-			etitry.setName("Tin tức thể thao test");
-
-
-
-			etitry.setImportDate(dt);
-			etitry.setImageEntity(list);
-			productRepository.save(etitry);
 		}
-		for (int i = 0; i < 10; i++) {
-			List<ImageEntity> list = new ArrayList<ImageEntity>();
-			ImageEntity imageEntity = new ImageEntity();
-			String url = "https://tdtt.gov.vn//Portals/0/EasyGalleryImages/2/1320/IMG_3382.JPG";
-			imageEntity.setUrl(url);
-			list.add(imageEntity);
-			ProductEntity etitry = new ProductEntity();
 		
-			etitry.setName("Tin tức thể thao test 2");
-
-
-			etitry.setImportDate(dt);
-			etitry.setImageEntity(list);
-			productRepository.save(etitry);
-		}
 		return ResponseEntity.status(HttpStatus.OK).body("successly!");
 	}
+
 //
 	@PostMapping("SearchProduct")
 	public ResponseEntity<?> SearchProduct(@RequestParam(required = true) String searchValue,
