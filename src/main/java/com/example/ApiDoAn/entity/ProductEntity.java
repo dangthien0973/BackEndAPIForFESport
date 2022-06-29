@@ -108,4 +108,12 @@ public class ProductEntity extends BaseEntity {
 		ImageEntity = imageEntity;
 	}
 
+	@Override
+	public String toString() {
+		return "ProductEntity [isNew=" + isNew + ", sourceOrigin=" + sourceOrigin + ", name=" + name + ", descriptions="
+				+ descriptions + ", importDate=" + importDate + ", expiryDate=" + expiryDate + ", categoryEntity="
+				+ categoryEntity + ", ImageEntity=" + ImageEntity + "]";
+	}
+	
+
 }

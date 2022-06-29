@@ -80,16 +80,23 @@ public class ProductController {
 			List<ImageEntity> listImage = new ArrayList<ImageEntity>();
 			ImageEntity imageEntity = new ImageEntity();
 			ProductEntity product = new ProductEntity();
-			String urlImge = item.download_url;
+			String urlImge = "https://tdtt.gov.vn/" + item.lightbox_url;
 			imageEntity.setUrl(urlImge);
+			imageEntity.setCreatedBy("Nguyễn Đăng Thiện");
+			imageEntity.setDateCreated(dt);
 			listImage.add(imageEntity);
 			product.setName(item.title);
 			product.setDescriptions(item.title);
 			product.setImportDate(dt);
+			product.setCreatedBy("nguyễn Đăng Thiện");
+			product.setDateCreated(dt);
+			
 			product.setImageEntity(listImage);
+			System.err.println(product);
 			productRepository.save(product);
 			
 		}
+		
 		
 		return ResponseEntity.status(HttpStatus.OK).body("successly!");
 	}
