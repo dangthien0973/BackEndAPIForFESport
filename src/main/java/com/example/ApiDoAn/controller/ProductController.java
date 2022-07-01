@@ -100,8 +100,6 @@ public class ProductController {
 		
 		return ResponseEntity.status(HttpStatus.OK).body("successly!");
 	}
-
-//
 	@PostMapping("SearchProduct")
 	public ResponseEntity<?> SearchProduct(@RequestParam(required = true) String searchValue,
 	   @RequestParam(defaultValue = "0") int pageIndex,  @RequestParam(defaultValue = "10") int pageSize) {

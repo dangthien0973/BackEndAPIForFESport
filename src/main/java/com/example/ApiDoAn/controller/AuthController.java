@@ -47,12 +47,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 @RequestMapping("/api/auth")
 public class AuthController {
 	@Autowired
 	AuthenticationManager authenticationManager;
-
 	@Autowired
 	JwtUtils jwtUtils;
 
@@ -156,8 +155,8 @@ public class AuthController {
 	// làm lại theo hướng để hiểu
 	@PostMapping("/signup")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterReq signUpRequest) {
-		   RoleEntity roletest = roleRepository.findByName("ROLE_USER").get();
-		   System.err.println(roletest.toString());
+		  
+		   System.err.println(signUpRequest.toString());
         if (userRepository.existsByUserName(signUpRequest.getUserName())) {
             return ResponseEntity
                     .badRequest()
@@ -211,7 +210,7 @@ public class AuthController {
         return ResponseEntity.ok(new MessageReponse("User registered successfully!"));
     }
 
-	  @PostMapping("/signin")
+	  @PostMapping("/login")
 	  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginReq loginRequest) {
 
 	    Authentication authentication = authenticationManager.authenticate(

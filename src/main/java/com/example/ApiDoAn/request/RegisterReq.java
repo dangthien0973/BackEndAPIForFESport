@@ -27,9 +27,7 @@ public class RegisterReq {
 	@NotBlank
     @Size(min = 6, max = 40)
     private String password;
-    @NotBlank
     private String phone;
-    @NotBlank
     private String gender;
     private Set<String> role;
 	public String getUserName() {
