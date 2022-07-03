@@ -29,7 +29,22 @@ public class RegisterReq {
     private String password;
     private String phone;
     private String gender;
-    private Set<String> role;
+    private String imageBase64;
+    private String customerName;
+    private boolean enabled;
+    public String getImageBase64() {
+		return imageBase64;
+	}
+	public void setImageBase64(String imageBase64) {
+		this.imageBase64 = imageBase64;
+	}
+	public String getCustomerName() {
+		return customerName;
+	}
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+	private Set<String> role;
 	public String getUserName() {
 		return userName;
 	}

@@ -49,13 +49,20 @@ public class UserEntity extends BaseEntity {
     private int verifiForgot;
     @Column
     private String statuss;
+    @Column
+    private String customerName;
+    @Column
+    private String imageBase64;
 
     @OneToOne(mappedBy = "userEntity")
     private RefreshTokenEntity refreshToken;
-    public UserEntity(String username, String email, String password) {
+    public UserEntity(String username, String email, String password, String imageBase64, boolean enabled,String customerName,String phone ) {
         this.userName = username;
         this.email = email;
-        this.passwords = password;
+        this.imageBase64 = imageBase64;
+        this.customerName = customerName;
+        this.phone = phone;
+        
     }
 
     public UserEntity(String username,String email) {
@@ -160,6 +167,22 @@ public class UserEntity extends BaseEntity {
 
 	public void setRefreshToken(RefreshTokenEntity refreshToken) {
 		this.refreshToken = refreshToken;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public String getImageBase64() {
+		return imageBase64;
+	}
+
+	public void setImageBase64(String imageBase64) {
+		this.imageBase64 = imageBase64;
 	}
     
 

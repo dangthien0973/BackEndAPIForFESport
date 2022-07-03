@@ -1,6 +1,9 @@
 package com.example.ApiDoAn.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.ApiDoAn.comom.ERole;
 import com.example.ApiDoAn.entity.PermissionEntity;
+import com.example.ApiDoAn.entity.ProductEntity;
 import com.example.ApiDoAn.entity.RefreshTokenEntity;
 import com.example.ApiDoAn.entity.RoleEntity;
 import com.example.ApiDoAn.entity.UserEntity;
@@ -170,7 +174,7 @@ public class AuthController {
         }
         // tạo contrustor để lưu mã hóa thông tin 
         UserEntity user = new UserEntity(signUpRequest.getUserName(), signUpRequest.getEmail(),
-                            encoder.encode(signUpRequest.getPassword()));
+                            encoder.encode(signUpRequest.getPassword()),signUpRequest.getImageBase64(),true,signUpRequest.getCustomerName(),signUpRequest.getPhone());
 
         Set<String> asignRoles = signUpRequest.getRole();
         Set<RoleEntity> roles = new HashSet();
@@ -191,12 +195,11 @@ public class AuthController {
 
                         break;
                     case "mod":
-                        RoleEntity modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                        RoleEntity modRole = roleRepository.findByName("ROLE_MODERATOR")
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(modRole);
 
                         break;
-                        // mặc định default là user bình thường
                     default:
                         RoleEntity userRole = roleRepository.findByName(ERole.ROLE_USER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -212,7 +215,7 @@ public class AuthController {
 
 	  @PostMapping("/login")
 	  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginReq loginRequest) {
-
+        
 	    Authentication authentication = authenticationManager.authenticate(
 	        new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -225,6 +228,15 @@ public class AuthController {
 	        .collect(Collectors.toList());
 	    return ResponseEntity.status(HttpStatus.OK).body(new JwtResponse(HttpStatus.OK.value(),jwt, jwt, userDetails.getId(),
                 userDetails.getUsername(), userDetails.getEmail(), roles));
-
 	  }
+		@PostMapping("getAllUser")
+		public ResponseEntity<?> getAllUser(@RequestParam(value = "pageIndex") int pageIndex) {
+			int pageIndextoCheck =0;
+			pageIndextoCheck =pageIndex ;
+			int pageSize = 10;
+			Pageable pageable = PageRequest.of(pageIndex, pageSize);
+			Page<UserEntity> result = userRepository.findAll(pageable);
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result));
+		}
 }

@@ -90,11 +90,8 @@ public class ProductController {
 			product.setImportDate(dt);
 			product.setCreatedBy("nguyễn Đăng Thiện");
 			product.setDateCreated(dt);
-			
 			product.setImageEntity(listImage);
-			System.err.println(product);
 			productRepository.save(product);
-			
 		}
 		
 		
@@ -129,7 +126,6 @@ public class ProductController {
 			}
 			request.lstCateGory = listCateGoryProduct;
 		}
-
 		Pageable pageable = PageRequest.of(pageIndex, pageSize);
 		Page<ProductEntity> lstProduct = productRepository.filterProduct(request.lstCateGory, pageable);
 		return ResponseEntity.status(HttpStatus.OK).body(lstProduct);

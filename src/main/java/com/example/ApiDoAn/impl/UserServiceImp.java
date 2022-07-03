@@ -56,7 +56,7 @@ public class UserServiceImp implements IUserService {
         // Create new user's account
 //        UserEntity user = this.userRepository.findByUserName(RegisterReq.getUserName()).get();
 //        user.setPasswords( encoder.encode(RegisterReq.getPassword()));
-    	UserEntity user =new UserEntity(RegisterReq.getUserName(),RegisterReq.getEmail(),RegisterReq.getPassword());
+    	UserEntity user =new UserEntity(RegisterReq.getUserName(),RegisterReq.getEmail(),RegisterReq.getPassword(),RegisterReq.getImageBase64(),true,RegisterReq.getCustomerName(),RegisterReq.getPhone());
     	
         user.setPasswords(RegisterReq.getPassword());
         user.setPhone(RegisterReq.getPhone());

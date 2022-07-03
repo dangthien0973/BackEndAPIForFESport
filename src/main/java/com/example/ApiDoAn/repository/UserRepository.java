@@ -1,9 +1,13 @@
 package com.example.ApiDoAn.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.example.ApiDoAn.entity.ProductEntity;
 import com.example.ApiDoAn.entity.UserEntity;
 
 import java.util.Optional;
@@ -29,4 +33,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u FROM UserEntity u where  u.verifiForgot = ?1")
     UserEntity findByVerifiForgot(int verifiForgot);
 
+	Page<UserEntity> findAll(Pageable pageable);
 }
