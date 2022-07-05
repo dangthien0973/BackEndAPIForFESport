@@ -239,4 +239,12 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result));
 		}
+		@PostMapping("DeleteUser")
+		public ResponseEntity<?> Detele(@RequestParam(value = "id") long id) {
+			int pageIndextoCheck =0;
+			 userRepository.deleteById(id);
+			
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject(HttpStatus.OK.value(), "successfully!","Xóa thành công"));
+		}
 }

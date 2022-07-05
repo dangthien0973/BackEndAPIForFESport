@@ -34,4 +34,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByVerifiForgot(int verifiForgot);
 
 	Page<UserEntity> findAll(Pageable pageable);
+	 @Query("delete from UserEntity u where u.userName = ?1")
+	    void deleteUsersByFirstName(String firstName);
 }
