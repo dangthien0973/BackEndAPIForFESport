@@ -253,6 +253,7 @@ public class AuthController {
 	        UserEntity user = new UserEntity(signUpRequest.getUserName(), signUpRequest.getEmail(),
 	                            encoder.encode(signUpRequest.getPassword()),signUpRequest.getImageBase64(),true,signUpRequest.getCustomerName(),signUpRequest.getPhone());
 	        user.setId(signUpRequest.getId());
+	        
 	        Set<String> asignRoles = signUpRequest.getRole();
 	        Set<RoleEntity> roles = new HashSet();
 	            asignRoles.forEach(role -> {
