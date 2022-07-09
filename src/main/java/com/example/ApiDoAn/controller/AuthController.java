@@ -247,4 +247,37 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseObject(HttpStatus.OK.value(), "successfully!","Xóa thành công"));
 		}
+		@PostMapping("/UpdateUser")
+	    public ResponseEntity<?> UpdateUser(@Valid @RequestBody RegisterReq signUpRequest) {
+	        // tạo contrustor để lưu mã hóa thông tin 
+	        UserEntity user = new UserEntity(signUpRequest.getUserName(), signUpRequest.getEmail(),
+	                            encoder.encode(signUpRequest.getPassword()),signUpRequest.getImageBase64(),true,signUpRequest.getCustomerName(),signUpRequest.getPhone());
+	        user.setId(signUpRequest.getId());
+	        Set<String> asignRoles = signUpRequest.getRole();
+	        Set<RoleEntity> roles = new HashSet();
+	            asignRoles.forEach(role -> {
+	                switch (role) {
+	                    case "admin":
+	                        RoleEntity adminRole = roleRepository.findByName("ROLE_ADMIN")
+	                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+	                        roles.add(adminRole);
+
+	                        break;
+	                    case "mod":
+	                        RoleEntity modRole = roleRepository.findByName("ROLE_MODERATOR")
+	                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+	                        roles.add(modRole);
+
+	                        break;
+	                    default:
+	                        RoleEntity userRole = roleRepository.findByName(ERole.ROLE_USER)
+	                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+	                        roles.add(userRole);
+	                }
+	            });
+	        user.setRoles(roles);
+	        userRepository.save(user);
+
+	        return ResponseEntity.ok(new MessageReponse("User registered successfully!"));
+	    }
 }

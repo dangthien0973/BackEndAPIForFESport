@@ -32,7 +32,21 @@ public class RegisterReq {
     private String imageBase64;
     private String customerName;
     private boolean enabled;
-    public String getImageBase64() {
+    private Long id;
+    
+    public boolean isEnabled() {
+		return enabled;
+	}
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getImageBase64() {
 		return imageBase64;
 	}
 	public void setImageBase64(String imageBase64) {

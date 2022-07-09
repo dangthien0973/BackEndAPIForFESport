@@ -64,7 +64,15 @@ public class UserEntity extends BaseEntity {
         this.phone = phone;
         
     }
-
+    public UserEntity(Long id,String username, String email, String password, String imageBase64, boolean enabled,String customerName,String phone ) {
+        this.userName = username;
+        this.email = email;
+        this.imageBase64 = imageBase64;
+        this.customerName = customerName;
+        this.phone = phone;
+     
+        
+    }
     public UserEntity(String username,String email) {
         this.userName = username;
         this.email = email;
