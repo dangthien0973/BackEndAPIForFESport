@@ -45,6 +45,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -159,8 +160,7 @@ public class AuthController {
 	// làm lại theo hướng để hiểu
 	@PostMapping("/signup")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterReq signUpRequest) {
-		  
-		   System.err.println(signUpRequest.toString());
+		Date dt=new Date();
         if (userRepository.existsByUserName(signUpRequest.getUserName())) {
             return ResponseEntity
                     .badRequest()
@@ -175,7 +175,8 @@ public class AuthController {
         // tạo contrustor để lưu mã hóa thông tin 
         UserEntity user = new UserEntity(signUpRequest.getUserName(), signUpRequest.getEmail(),
                             encoder.encode(signUpRequest.getPassword()),signUpRequest.getImageBase64(),true,signUpRequest.getCustomerName(),signUpRequest.getPhone());
-
+        user.setPasswords(encoder.encode(signUpRequest.getPassword()));
+        user.setDateCreated(dt);
         Set<String> asignRoles = signUpRequest.getRole();
         Set<RoleEntity> roles = new HashSet();
       
@@ -248,11 +249,14 @@ public class AuthController {
 					.body(new ResponseObject(HttpStatus.OK.value(), "successfully!","Xóa thành công"));
 		}
 		@PostMapping("/UpdateUser")
-	    public ResponseEntity<?> UpdateUser(@Valid @RequestBody RegisterReq signUpRequest) {
+	    public ResponseEntity<?> UpdateUser( @RequestBody RegisterReq signUpRequest) {
 	        // tạo contrustor để lưu mã hóa thông tin 
+			Date dt=new Date();
 	        UserEntity user = new UserEntity(signUpRequest.getUserName(), signUpRequest.getEmail(),
-	                            encoder.encode(signUpRequest.getPassword()),signUpRequest.getImageBase64(),true,signUpRequest.getCustomerName(),signUpRequest.getPhone());
+	                            signUpRequest.getPassword(),signUpRequest.getImageBase64(),true,signUpRequest.getCustomerName(),signUpRequest.getPhone());
 	        user.setId(signUpRequest.getId());
+	        user.setPasswords(signUpRequest.getPassword());
+	        user.setDateCreated(dt);
 	        
 	        Set<String> asignRoles = signUpRequest.getRole();
 	        Set<RoleEntity> roles = new HashSet();
@@ -271,7 +275,7 @@ public class AuthController {
 
 	                        break;
 	                    default:
-	                        RoleEntity userRole = roleRepository.findByName(ERole.ROLE_USER)
+	                        RoleEntity userRole = roleRepository.findByName("ROLE_USER")
 	                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 	                        roles.add(userRole);
 	                }
@@ -281,4 +285,5 @@ public class AuthController {
 
 	        return ResponseEntity.ok(new MessageReponse("User registered successfully!"));
 	    }
+		
 }

@@ -20,12 +20,8 @@ import java.util.Set;
 @NoArgsConstructor
 @CrossOrigin
 public class RegisterReq {
-    @NotBlank
     private String userName;
-    @NotBlank
     private String email;
-	@NotBlank
-    @Size(min = 6, max = 40)
     private String password;
     private String phone;
     private String gender;
@@ -33,6 +29,7 @@ public class RegisterReq {
     private String customerName;
     private boolean enabled;
     private Long id;
+    public String RoleAdmin;
     
     public boolean isEnabled() {
 		return enabled;
