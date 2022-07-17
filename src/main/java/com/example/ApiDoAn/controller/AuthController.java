@@ -20,6 +20,7 @@ import com.example.ApiDoAn.entity.RefreshTokenEntity;
 import com.example.ApiDoAn.entity.RoleEntity;
 import com.example.ApiDoAn.entity.UserEntity;
 import com.example.ApiDoAn.impl.UserServiceImp;
+import com.example.ApiDoAn.reponse.CountUserByMonth;
 import com.example.ApiDoAn.reponse.JwtResponse;
 import com.example.ApiDoAn.reponse.MessageReponse;
 import com.example.ApiDoAn.reponse.ResponseObject;
@@ -45,8 +46,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -285,5 +288,17 @@ public class AuthController {
 
 	        return ResponseEntity.ok(new MessageReponse("User registered successfully!"));
 	    }
-		
+		@PostMapping("GetAllUserToChart")
+		public ResponseEntity<?> GetAllUserToChart() {
+			List<UserEntity> result = userRepository.findAll();
+			ArrayList<CountUserByMonth> resultCount = new ArrayList<CountUserByMonth>();
+		    for (UserEntity userEntity : result) {
+		    	CountUserByMonth user = new CountUserByMonth();
+		    	user.setMonth(userEntity.getDateCreated().getMonth());
+		    	user.setYear(userEntity.getDateCreated(). getYear());
+		    	resultCount.add(user);
+			}
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject(HttpStatus.OK.value(), "successfully!",resultCount));
+		}
 }
