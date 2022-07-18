@@ -20,7 +20,9 @@ import com.example.ApiDoAn.repository.CategoryRepository;
 import com.example.ApiDoAn.repository.ProductRepository;
 import com.example.ApiDoAn.request.Detail;
 import com.example.ApiDoAn.request.DetailItem;
+import com.example.ApiDoAn.request.Image;
 import com.example.ApiDoAn.request.ProductFilterRequest;
+import com.example.ApiDoAn.request.ProductRequest;
 import com.example.ApiDoAn.request.content;
 import com.example.ApiDoAn.service.IProductService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -102,7 +104,6 @@ public class ProductController {
 	   @RequestParam(defaultValue = "0") int pageIndex,  @RequestParam(defaultValue = "10") int pageSize) {
 		 Pageable pageable = PageRequest.of(pageIndex,pageSize);
          String param = searchValue;
-     	System.err.println(param);
          Page<ProductEntity> result = productRepository.search(param, pageable);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result));
@@ -130,5 +131,27 @@ public class ProductController {
 		Page<ProductEntity> lstProduct = productRepository.filterProduct(request.lstCateGory, pageable);
 		return ResponseEntity.status(HttpStatus.OK).body(lstProduct);
 	}
-
+	// them san pham 
+	@PostMapping("filterProduct")
+	public ResponseEntity<?> filterProduct(@Valid @RequestBody ProductRequest request) {
+		// khởi tạo đối tượng
+		Date dt=new Date();
+	
+		List<ImageEntity> listImage = new ArrayList<ImageEntity>();
+		ProductEntity product = new ProductEntity();
+		product.setName(request.name);
+		product.setDescriptions(request.descriptions);
+		product.setImportDate(dt);
+		product.setCreatedBy("Admin");
+		product.setDateCreated(dt);
+		
+		for (Image image : request.ImageEntity) {
+			ImageEntity imageEntity =  new ImageEntity();
+			imageEntity.setUrl(image.url);
+			listImage.add(imageEntity);
+		}
+		product.setImageEntity(listImage);
+		return ResponseEntity.status(HttpStatus.OK).body(listImage);
+	}
+	
 }
