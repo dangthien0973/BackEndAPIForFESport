@@ -52,6 +52,7 @@ public class UserEntity extends BaseEntity {
     @Column
     private String customerName;
     @Column
+    @Lob
     private String imageBase64;
 
     @OneToOne(mappedBy = "userEntity")

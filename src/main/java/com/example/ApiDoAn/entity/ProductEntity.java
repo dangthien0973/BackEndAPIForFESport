@@ -28,6 +28,7 @@ public class ProductEntity extends BaseEntity {
 	private String sourceOrigin;
 	@Column
 	private String name;
+	@Lob
 	@Column
 	private String descriptions;
 	@Column

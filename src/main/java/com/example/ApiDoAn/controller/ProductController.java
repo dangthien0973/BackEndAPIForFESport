@@ -65,12 +65,13 @@ public class ProductController {
 				.body(new ResponseObject(HttpStatus.OK.value(), "product detail", result));
 
 	}
+
 	// pending
 	@GetMapping("/toolcrawlData")
 	public ResponseEntity<?> toolsaveProduct() throws IOException {
 		String uri = "https://tdtt.gov.vn/DesktopModules/EasyDnnGallery/ChameleonGalleryService.ashx?tabid=162&fullscreen=false&mid=5402&portal_id=0&locale=vi-VN&article_id=0&html5_player=1&_=1655312608106";
 		RestTemplate restTemplate = new RestTemplate();
-		Date dt=new Date();
+		Date dt = new Date();
 		String result = restTemplate.getForObject(uri, String.class);
 		// lấy kết quả parseto ojbject trả về dùng objectMapper để trả về kết quả
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -78,7 +79,7 @@ public class ProductController {
 		List<Detail> detail = data.content;
 		Detail detailFirst = detail.get(0);
 		List<DetailItem> detailItem = detailFirst.items;
-		for(DetailItem item :  detailItem) {
+		for (DetailItem item : detailItem) {
 			List<ImageEntity> listImage = new ArrayList<ImageEntity>();
 			ImageEntity imageEntity = new ImageEntity();
 			ProductEntity product = new ProductEntity();
@@ -95,16 +96,16 @@ public class ProductController {
 			product.setImageEntity(listImage);
 			productRepository.save(product);
 		}
-		
-		
+
 		return ResponseEntity.status(HttpStatus.OK).body("successly!");
 	}
+
 	@PostMapping("SearchProduct")
 	public ResponseEntity<?> SearchProduct(@RequestParam(required = true) String searchValue,
-	   @RequestParam(defaultValue = "0") int pageIndex,  @RequestParam(defaultValue = "10") int pageSize) {
-		 Pageable pageable = PageRequest.of(pageIndex,pageSize);
-         String param = searchValue;
-         Page<ProductEntity> result = productRepository.search(param, pageable);
+			@RequestParam(defaultValue = "0") int pageIndex, @RequestParam(defaultValue = "10") int pageSize) {
+		Pageable pageable = PageRequest.of(pageIndex, pageSize);
+		String param = searchValue;
+		Page<ProductEntity> result = productRepository.search(param, pageable);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result));
 	}
@@ -121,8 +122,7 @@ public class ProductController {
 			// lấy hết category 3 từ database lên
 			List<CategoryEntity> listCategory = categoryRepository.findAll();
 			for (CategoryEntity categoryEntity : listCategory) {
-				;
-				System.err.println(categoryEntity.getId());
+
 				listCateGoryProduct.add(categoryEntity.getId());
 			}
 			request.lstCateGory = listCateGoryProduct;
@@ -131,12 +131,14 @@ public class ProductController {
 		Page<ProductEntity> lstProduct = productRepository.filterProduct(request.lstCateGory, pageable);
 		return ResponseEntity.status(HttpStatus.OK).body(lstProduct);
 	}
-	// them san pham 
-	@PostMapping("filterProduct")
-	public ResponseEntity<?> filterProduct(@Valid @RequestBody ProductRequest request) {
+
+	// them san pham
+	@PostMapping("addProduct")
+	public ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequest request) {
 		// khởi tạo đối tượng
-		Date dt=new Date();
-	
+
+		Date dt = new Date();
+
 		List<ImageEntity> listImage = new ArrayList<ImageEntity>();
 		ProductEntity product = new ProductEntity();
 		product.setName(request.name);
@@ -144,14 +146,21 @@ public class ProductController {
 		product.setImportDate(dt);
 		product.setCreatedBy("Admin");
 		product.setDateCreated(dt);
-		
+		List<CategoryEntity> listCategory = categoryRepository.findAll();
+		for (CategoryEntity categoryEntity : listCategory) {
+			if (categoryEntity.getId() == request.categoryId) {
+				product.setCategoryEntity(categoryEntity);
+			}
+
+		}
 		for (Image image : request.ImageEntity) {
-			ImageEntity imageEntity =  new ImageEntity();
+			ImageEntity imageEntity = new ImageEntity();
 			imageEntity.setUrl(image.url);
 			listImage.add(imageEntity);
 		}
 		product.setImageEntity(listImage);
-		return ResponseEntity.status(HttpStatus.OK).body(listImage);
+		productRepository.save(product);
+		return ResponseEntity.status(HttpStatus.OK).body("Thêm thành công");
 	}
-	
+
 }

@@ -7,7 +7,7 @@ public class ProductRequest {
   public String name;
   public String descriptions;
   public Date importDate;
-  public int  categoryId;
+  public long  categoryId;
   public List<Image> ImageEntity;
   
 }
