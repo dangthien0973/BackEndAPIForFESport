@@ -31,7 +31,6 @@ public class ProductEntity extends BaseEntity {
 	private String name;
 	@Lob
 	@Column
-	@Type(type = "org.hibernate.type.TextType")
 	private String descriptions;
 	@Column
 	private Date importDate;
@@ -44,11 +43,6 @@ public class ProductEntity extends BaseEntity {
 	@JsonIgnore
 	@OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
 	private List<ImageEntity> ImageEntity;
-
-	
-
-
-
 
 	public String getSourceOrigin() {
 		return sourceOrigin;

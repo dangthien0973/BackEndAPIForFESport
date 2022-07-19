@@ -18,6 +18,7 @@ import com.example.ApiDoAn.entity.UserEntity;
 import com.example.ApiDoAn.reponse.ProductResponse;
 import com.example.ApiDoAn.reponse.ResponseObject;
 import com.example.ApiDoAn.repository.CategoryRepository;
+import com.example.ApiDoAn.repository.ImageRepository;
 import com.example.ApiDoAn.repository.ProductRepository;
 import com.example.ApiDoAn.request.Detail;
 import com.example.ApiDoAn.request.DetailItem;
@@ -54,6 +55,9 @@ public class ProductController {
 	@Autowired
 	@JsonIgnore
 	CategoryRepository categoryRepository;
+	@Autowired
+	@JsonIgnore
+	ImageRepository imageReposiotry;
 
 	@GetMapping("/product-detail/{productId}")
 	public ResponseEntity<?> showProductDetail(@PathVariable(name = "productId", required = true) Long productId) {
@@ -153,13 +157,14 @@ public class ProductController {
 			}
 
 		}
+		productRepository.save(product);
 		for (Image image : request.ImageEntity) {
 			ImageEntity imageEntity = new ImageEntity();
 			imageEntity.setUrl(image.url);
-			listImage.add(imageEntity);
+			imageEntity.setProductEntity(product);
+			imageReposiotry.save(imageEntity);
 		}
-		product.setImageEntity(listImage);
-		productRepository.save(product);
+		
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!","Them thanh cong"));
 	}
 	// lấy hết sản phẩm ra xử lí

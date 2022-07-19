@@ -24,9 +24,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "image")
 public class ImageEntity extends BaseEntity {
+	@Type(type = "org.hibernate.type.TextType")
 	@Lob
 	@Column
-	@Type(type = "org.hibernate.type.TextType")
     private String url;
     @ManyToOne
     @JsonIgnore
