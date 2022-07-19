@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+
+import org.hibernate.annotations.Type;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -21,15 +24,14 @@ import java.util.Set;
 @Table(name = "product")
 
 public class ProductEntity extends BaseEntity {
-	
-	@Column
-	private boolean isNew;
 	@Column
 	private String sourceOrigin;
 	@Column
+	@Type(type = "org.hibernate.type.TextType")
 	private String name;
 	@Lob
 	@Column
+	@Type(type = "org.hibernate.type.TextType")
 	private String descriptions;
 	@Column
 	private Date importDate;
@@ -45,13 +47,8 @@ public class ProductEntity extends BaseEntity {
 
 	
 
-	public boolean isNew() {
-		return isNew;
-	}
 
-	public void setNew(boolean isNew) {
-		this.isNew = isNew;
-	}
+
 
 	public String getSourceOrigin() {
 		return sourceOrigin;
@@ -111,7 +108,7 @@ public class ProductEntity extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return "ProductEntity [isNew=" + isNew + ", sourceOrigin=" + sourceOrigin + ", name=" + name + ", descriptions="
+		return "ProductEntity [isNew="  + ", sourceOrigin=" + sourceOrigin + ", name=" + name + ", descriptions="
 				+ descriptions + ", importDate=" + importDate + ", expiryDate=" + expiryDate + ", categoryEntity="
 				+ categoryEntity + ", ImageEntity=" + ImageEntity + "]";
 	}

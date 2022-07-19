@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import com.example.ApiDoAn.entity.CategoryEntity;
 import com.example.ApiDoAn.entity.ImageEntity;
 import com.example.ApiDoAn.entity.ProductEntity;
+import com.example.ApiDoAn.entity.UserEntity;
 import com.example.ApiDoAn.reponse.ProductResponse;
 import com.example.ApiDoAn.reponse.ResponseObject;
 import com.example.ApiDoAn.repository.CategoryRepository;
@@ -138,7 +139,6 @@ public class ProductController {
 		// khởi tạo đối tượng
 
 		Date dt = new Date();
-
 		List<ImageEntity> listImage = new ArrayList<ImageEntity>();
 		ProductEntity product = new ProductEntity();
 		product.setName(request.name);
@@ -160,7 +160,19 @@ public class ProductController {
 		}
 		product.setImageEntity(listImage);
 		productRepository.save(product);
-		return ResponseEntity.status(HttpStatus.OK).body("Thêm thành công");
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!","Them thanh cong"));
+	}
+	// lấy hết sản phẩm ra xử lí
+    // làm cho admin
+	@PostMapping("getAllProduct")
+	public ResponseEntity<?> getAllUser(@RequestParam(value = "pageIndex") int pageIndex) {
+		int pageIndextoCheck =0;
+		pageIndextoCheck =pageIndex ;
+		int pageSize = 10;
+		Pageable pageable = PageRequest.of(pageIndex, pageSize);
+		Page<ProductEntity> result = productRepository.findAll(pageable);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result));
 	}
 
 }

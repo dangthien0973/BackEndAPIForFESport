@@ -12,6 +12,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
@@ -24,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class ImageEntity extends BaseEntity {
 	@Lob
 	@Column
+	@Type(type = "org.hibernate.type.TextType")
     private String url;
     @ManyToOne
     @JsonIgnore
