@@ -170,7 +170,7 @@ public class ProductController {
 	// lấy hết sản phẩm ra xử lí
     // làm cho admin
 	@PostMapping("getAllProduct")
-	public ResponseEntity<?> getAllUser(@RequestParam(value = "pageIndex") int pageIndex) {
+	public ResponseEntity<?> getAllProduct(@RequestParam(value = "pageIndex") int pageIndex) {
 		int pageIndextoCheck =0;
 		pageIndextoCheck =pageIndex ;
 		int pageSize = 10;
@@ -178,6 +178,44 @@ public class ProductController {
 		Page<ProductEntity> result = productRepository.findAll(pageable);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result));
+	}
+	@PostMapping("DeleteProduct")
+	public ResponseEntity<?> DeleteProduct(@RequestParam(value = "id") long id) {
+		int pageIndextoCheck =0;
+		productRepository.deleteById(id);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!","Xóa thành công"));
+	}
+	@PostMapping("editProduct")
+	public ResponseEntity<?> editProduct(@Valid @RequestBody ProductRequest request) {
+		// khởi tạo đối tượng
+
+		Date dt = new Date();
+		List<ImageEntity> listImage = new ArrayList<ImageEntity>();
+		ProductEntity product = new ProductEntity();
+		product.setId(request.id);
+		product.setName(request.name);
+		product.setDescriptions(request.descriptions);
+		product.setImportDate(dt);
+		product.setCreatedBy("Admin");
+		product.setDateCreated(dt);
+		List<CategoryEntity> listCategory = categoryRepository.findAll();
+		for (CategoryEntity categoryEntity : listCategory) {
+			if (categoryEntity.getId() == request.categoryId) {
+				product.setCategoryEntity(categoryEntity);
+			}
+
+		}
+		productRepository.save(product);
+		/*
+		 * for (Image image : request.ImageEntity) { ImageEntity imageEntity = new
+		 * ImageEntity();
+		 * 
+		 * imageEntity.setUrl(image.url); imageEntity.setProductEntity(product);
+		 * imageReposiotry.save(imageEntity); }
+		 */
+		
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!","Them thanh cong"));
 	}
 
 }
