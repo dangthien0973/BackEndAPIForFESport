@@ -230,8 +230,8 @@ public class AuthController {
 	    List<String> roles = userDetails.getAuthorities().stream()
 	        .map(item -> item.getAuthority())
 	        .collect(Collectors.toList());
-	    return ResponseEntity.status(HttpStatus.OK).body(new JwtResponse(HttpStatus.OK.value(),jwt, jwt, userDetails.getId(),
-                userDetails.getUsername(), userDetails.getEmail(), roles));
+	    return ResponseEntity.status(HttpStatus.OK).body(new JwtResponse(HttpStatus.OK.value(),jwt, userDetails.getImageBase64(), userDetails.getId(),
+                userDetails.getUsername(), userDetails.getEmail(), roles,userDetails.getImageBase64()));
 	  }
 		@PostMapping("getAllUser")
 		public ResponseEntity<?> getAllUser(@RequestParam(value = "pageIndex") int pageIndex) {
