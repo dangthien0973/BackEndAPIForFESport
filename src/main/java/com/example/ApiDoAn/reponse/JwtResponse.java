@@ -15,9 +15,10 @@ public class JwtResponse {
     private Long id;
     private String username;
     private String email;
+    private String baseImage;
     private List<String> roles;
 
-    public JwtResponse(int status,String accessToken, String refreshToken, Long id, String username, String email, List<String> roles) {
+    public JwtResponse(int status,String accessToken, String refreshToken, Long id, String username, String email, List<String> roles,String baseImage) {
        this.status=status;
         this.token = accessToken;
         this.refreshToken = refreshToken;
@@ -25,6 +26,7 @@ public class JwtResponse {
         this.username = username;
         this.email = email;
         this.roles = roles;
+        this.baseImage =baseImage;
     }
 
 	public int getStatus() {

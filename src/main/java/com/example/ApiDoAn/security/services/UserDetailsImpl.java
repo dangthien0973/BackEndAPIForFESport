@@ -22,18 +22,23 @@ public class UserDetailsImpl implements UserDetails {
   private String username;
 
   private String email;
+  
+
+
+private String imageBase64;
 
   @JsonIgnore
   private String password;
 
   private Collection<? extends GrantedAuthority> authorities;
 
-  public UserDetailsImpl(Long id, String username, String email, String password,
-      Collection<? extends GrantedAuthority> authorities) {
+  public UserDetailsImpl(Long id, String username, String email, String password,String imageBase64
+      ,Collection<? extends GrantedAuthority> authorities) {
     this.id = id;
     this.username = username;
     this.email = email;
     this.password = password;
+    this.imageBase64=imageBase64;
     this.authorities = authorities;
   }
 
@@ -47,6 +52,7 @@ public class UserDetailsImpl implements UserDetails {
         user.getUserName(), 
         user.getEmail(),
         user.getPasswords(), 
+        user.getImageBase64(),
         authorities);
   }
 
@@ -87,7 +93,13 @@ public class UserDetailsImpl implements UserDetails {
   public boolean isCredentialsNonExpired() {
     return true;
   }
+  public String getImageBase64() {
+	return imageBase64;
+}
 
+public void setImageBase64(String imageBase64) {
+	this.imageBase64 = imageBase64;
+}
   @Override
   public boolean isEnabled() {
     return true;
