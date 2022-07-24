@@ -1,5 +1,6 @@
 package com.example.ApiDoAn.controller;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.WebProperties.Resources.Chain.Strategy.Content;
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import com.example.ApiDoAn.entity.ImageEntity;
 import com.example.ApiDoAn.entity.ProductEntity;
 import com.example.ApiDoAn.entity.UserEntity;
 import com.example.ApiDoAn.reponse.ProductResponse;
+import com.example.ApiDoAn.reponse.ProductResponseUser;
 import com.example.ApiDoAn.reponse.ResponseObject;
 import com.example.ApiDoAn.repository.CategoryRepository;
 import com.example.ApiDoAn.repository.ImageRepository;
@@ -58,10 +60,14 @@ public class ProductController {
 	@Autowired
 	@JsonIgnore
 	ImageRepository imageReposiotry;
+	@Autowired
+	ModelMapper mapper;
 
 	@GetMapping("/product-detail/{productId}")
 	public ResponseEntity<?> showProductDetail(@PathVariable(name = "productId", required = true) Long productId) {
 		Optional<ProductEntity> result = productRepository.findById(productId);
+//		hiep
+		ProductResponseUser productResponse=mapper.map(result, ProductResponseUser.class);
 		if (result == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new ResponseObject(HttpStatus.NOT_FOUND.value(), "Not found product", ""));
@@ -146,6 +152,7 @@ public class ProductController {
 		List<ImageEntity> listImage = new ArrayList<ImageEntity>();
 		ProductEntity product = new ProductEntity();
 		product.setName(request.name);
+		System.out.println(request.descriptions);
 		product.setDescriptions(request.descriptions);
 		product.setImportDate(dt);
 		product.setCreatedBy("Admin");
@@ -162,22 +169,44 @@ public class ProductController {
 			ImageEntity imageEntity = new ImageEntity();
 			imageEntity.setUrl(image.url);
 			imageEntity.setProductEntity(product);
+			listImage.add(imageEntity);
 			imageReposiotry.save(imageEntity);
+			
 		}
-		
+		product.setImageEntity(listImage);
+		productRepository.save(product);
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!","Them thanh cong"));
 	}
 	// lấy hết sản phẩm ra xử lí
     // làm cho admin
 	@PostMapping("getAllProduct")
-	public ResponseEntity<?> getAllUser(@RequestParam(value = "pageIndex") int pageIndex) {
-		int pageIndextoCheck =0;
-		pageIndextoCheck =pageIndex ;
-		int pageSize = 10;
+	public ResponseEntity<?> getAllUser(@RequestParam(defaultValue = "0") int pageIndex,
+            @RequestParam(defaultValue = "8") int pageSize) {
+		
 		Pageable pageable = PageRequest.of(pageIndex, pageSize);
-		Page<ProductEntity> result = productRepository.findAll(pageable);
+		 Page<ProductEntity> pageTuts;
+		  pageTuts = this.productRepository.findAll(pageable);
+	
+		 List<ProductResponseUser> listProductResponseUser=new ArrayList<ProductResponseUser>();
+		 List<ProductEntity> productEntityList = pageTuts.getContent();
+		for (ProductEntity productEntity : productEntityList) {
+			listProductResponseUser.add(mapper.map(productEntity, ProductResponseUser.class));
+		}
+	     Map<String, Object> result2 = new HashMap<>();
+	        result2.put("products", listProductResponseUser);
+	        result2.put("curerentPage", pageTuts.getNumber());
+	        result2.put("totalitems", pageTuts.getTotalElements());
+	        result2.put("totalPage", pageTuts.getTotalPages());
+	        result2.put("itemInPages", pageTuts.getNumberOfElements());
+	        if (listProductResponseUser.get(0).getImageEntity().size()>0) {
+				System.out.println("chuan cmnr");
+				listProductResponseUser.get(0).getImageEntity().size();
+			}else {
+				System.out.println("vc");
+				listProductResponseUser.get(0).getImageEntity().size();
+			}
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result));
+				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result2));
 	}
 
 }

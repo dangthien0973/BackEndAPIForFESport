@@ -29,8 +29,8 @@ public class ProductEntity extends BaseEntity {
 	@Column
 	@Type(type = "org.hibernate.type.TextType")
 	private String name;
-	@Lob
 	@Column
+	@Type(type = "org.hibernate.type.TextType")
 	private String descriptions;
 	@Column
 	private Date importDate;
@@ -41,7 +41,7 @@ public class ProductEntity extends BaseEntity {
 	@JoinColumn(name = "categoryId")
 	private CategoryEntity categoryEntity;
 	@JsonIgnore
-	@OneToMany(mappedBy = "productEntity", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "productEntity",fetch = FetchType.EAGER)
 	private List<ImageEntity> ImageEntity;
 
 	public String getSourceOrigin() {

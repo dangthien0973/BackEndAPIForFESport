@@ -3,6 +3,8 @@ package com.example.ApiDoAn.request;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Lob;
+
 public class ProductRequest {
   public String name;
   public String descriptions;

@@ -15,8 +15,7 @@ import com.example.ApiDoAn.comom.ERole;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Entity
 @Table(name = "roles")
 public class RoleEntity extends BaseEntity {
