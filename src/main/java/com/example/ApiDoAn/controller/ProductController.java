@@ -180,16 +180,9 @@ public class ProductController {
 	// lấy hết sản phẩm ra xử lí
     // làm cho admin
 	@PostMapping("getAllProduct")
-<<<<<<< HEAD
 	public ResponseEntity<?> getAllUser(@RequestParam(defaultValue = "0") int pageIndex,
             @RequestParam(defaultValue = "8") int pageSize) {
 		
-=======
-	public ResponseEntity<?> getAllProduct(@RequestParam(value = "pageIndex") int pageIndex) {
-		int pageIndextoCheck =0;
-		pageIndextoCheck =pageIndex ;
-		int pageSize = 10;
->>>>>>> 11636493bb5c3ffe00788d1da03528b294084774
 		Pageable pageable = PageRequest.of(pageIndex, pageSize);
 		 Page<ProductEntity> pageTuts;
 		  pageTuts = this.productRepository.findAll(pageable);
