@@ -313,14 +313,21 @@ public class ProductController {
 	public ResponseEntity<?> showScoreBoard(@RequestParam("id") Long id){
 	
 		System.out.println(id);
-		ScoreBoardEntity sc=scoreBoardRepo.findById(id).get();
-		ScoreBoardResponse sc2=new ScoreBoardResponse();
-		sc2.setName(sc.getName());
-		sc2.setImage(sc.getImage());
-		sc2.setScore(sc.getScore());
+//		ScoreBoardEntity sc=scoreBoardRepo.findById(id).get();
+		List<ScoreBoardEntity> result=scoreBoardRepo.findByCategoryEntityId(id);
+		List<ScoreBoardResponse> result2=new ArrayList<ScoreBoardResponse>();
+		List<ScoreBoardResponse> result3=new ArrayList<ScoreBoardResponse>();
+		for (ScoreBoardEntity scoreBoardEntity : result) {
+			result2.add(mapper.map(scoreBoardEntity, ScoreBoardResponse.class));
+		}
+		for (int i = 0; i <=1; i++) {
+			result3.add(mapper.map(result2.get(i), ScoreBoardResponse.class));
+		}
+		
+		System.out.println(result3.size());
 		
 		
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!",sc2));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!",result3));
 	}
 	
 	@PostMapping("editProduct")
