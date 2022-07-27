@@ -21,4 +21,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long>, P
 	Page<ProductEntity> filterProduct(@Param("lstCateGoryID") List<Long> lstCateGory, Pageable pageable);
 	@Query("SELECT p FROM ProductEntity p WHERE UPPER(p.name) LIKE CONCAT('%',UPPER(:keyWord),'%')")
 	Page<ProductEntity> search(@Param("keyWord") String keyword, Pageable pageable);
+	 Page<ProductEntity> findByCategoryEntityId(Long id, Pageable pageable);
+		@Query(value = "select * from product order by id desc limit 5",nativeQuery = true)
+	List<ProductEntity> getRecentNew();
+	
 }
