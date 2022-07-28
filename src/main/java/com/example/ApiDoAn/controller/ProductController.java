@@ -124,11 +124,22 @@ public class ProductController {
 	}
 
 	@PostMapping("SearchProduct")
-	public ResponseEntity<?> SearchProduct(@RequestParam(required = true) String searchValue,
+	public ResponseEntity<?> SearchProduct(@RequestParam(required = false) String searchValue,
 			@RequestParam(defaultValue = "0") int pageIndex, @RequestParam(defaultValue = "10") int pageSize) {
 		Pageable pageable = PageRequest.of(pageIndex, pageSize);
 		String param = searchValue;
-		Page<ProductEntity> result = productRepository.search(param, pageable);
+		System.out.println("searchProduct");
+		System.out.println(searchValue.length());
+		Page<ProductEntity> result =null;
+		if(searchValue.length()>=1) {
+			result = productRepository.search(param, pageable);
+		}else {
+			result = null;
+		}
+		
+	
+	
+		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result));
 	}
