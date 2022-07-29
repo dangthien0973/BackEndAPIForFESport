@@ -26,11 +26,13 @@ import java.util.Set;
 public class ProductEntity extends BaseEntity {
 	@Column
 	private String sourceOrigin;
-	@Column
 	@Type(type = "org.hibernate.type.TextType")
+	@Lob
+	@Column
 	private String name;
-	@Column
 	@Type(type = "org.hibernate.type.TextType")
+	@Lob
+	@Column
 	private String descriptions;
 	@Column
 	private Date importDate;
@@ -106,6 +108,7 @@ public class ProductEntity extends BaseEntity {
 				+ descriptions + ", importDate=" + importDate + ", expiryDate=" + expiryDate + ", categoryEntity="
 				+ categoryEntity + ", ImageEntity=" + ImageEntity + "]";
 	}
+	
 	
 
 }

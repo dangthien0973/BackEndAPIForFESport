@@ -154,7 +154,6 @@ public class ProductController {
 	@PostMapping("addProduct")
 	public ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequest request) {
 		// khởi tạo đối tượng
-
 		Date dt = new Date();
 		List<ImageEntity> listImage = new ArrayList<ImageEntity>();
 		ProductEntity product = new ProductEntity();
@@ -242,14 +241,6 @@ public class ProductController {
 
 		}
 		productRepository.save(product);
-		/*
-		 * for (Image image : request.ImageEntity) { ImageEntity imageEntity = new
-		 * ImageEntity();
-		 * 
-		 * imageEntity.setUrl(image.url); imageEntity.setProductEntity(product);
-		 * imageReposiotry.save(imageEntity); }
-		 */
-		
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!","Them thanh cong"));
 	}
 	@PostMapping("getAllProducttoAdmin")
