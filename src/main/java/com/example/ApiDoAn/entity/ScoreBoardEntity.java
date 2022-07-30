@@ -27,4 +27,29 @@ public class ScoreBoardEntity extends BaseEntity{
 	@ManyToOne
 	@JoinColumn(name = "categoryId")
 	private CategoryEntity categoryEntity;
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
+	}
+	public double getScore() {
+		return score;
+	}
+	public void setScore(double score) {
+		this.score = score;
+	}
+	public CategoryEntity getCategoryEntity() {
+		return categoryEntity;
+	}
+	public void setCategoryEntity(CategoryEntity categoryEntity) {
+		this.categoryEntity = categoryEntity;
+	}
+	
 }
