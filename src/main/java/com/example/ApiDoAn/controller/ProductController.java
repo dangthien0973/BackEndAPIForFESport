@@ -15,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 import com.example.ApiDoAn.entity.CategoryEntity;
 import com.example.ApiDoAn.entity.ImageEntity;
 import com.example.ApiDoAn.entity.ProductEntity;
+import com.example.ApiDoAn.entity.ScoreBoardEntity;
+import com.example.ApiDoAn.entity.ScoreBoardResponse;
 import com.example.ApiDoAn.entity.UserEntity;
 import com.example.ApiDoAn.reponse.ProductResponse;
 import com.example.ApiDoAn.reponse.ProductResponseUser;
@@ -22,6 +24,7 @@ import com.example.ApiDoAn.reponse.ResponseObject;
 import com.example.ApiDoAn.repository.CategoryRepository;
 import com.example.ApiDoAn.repository.ImageRepository;
 import com.example.ApiDoAn.repository.ProductRepository;
+import com.example.ApiDoAn.repository.ScoreBoardRepository;
 import com.example.ApiDoAn.request.Detail;
 import com.example.ApiDoAn.request.DetailItem;
 import com.example.ApiDoAn.request.Image;
@@ -60,6 +63,8 @@ public class ProductController {
 	@Autowired
 	@JsonIgnore
 	ImageRepository imageReposiotry;
+	@Autowired
+	ScoreBoardRepository scoreBoardRepo;
 	@Autowired
 	ModelMapper mapper;
 
@@ -119,11 +124,22 @@ public class ProductController {
 	}
 
 	@PostMapping("SearchProduct")
-	public ResponseEntity<?> SearchProduct(@RequestParam(required = true) String searchValue,
+	public ResponseEntity<?> SearchProduct(@RequestParam(required = false) String searchValue,
 			@RequestParam(defaultValue = "0") int pageIndex, @RequestParam(defaultValue = "10") int pageSize) {
 		Pageable pageable = PageRequest.of(pageIndex, pageSize);
 		String param = searchValue;
-		Page<ProductEntity> result = productRepository.search(param, pageable);
+		System.out.println("searchProduct");
+		System.out.println(searchValue.length());
+		Page<ProductEntity> result =null;
+		if(searchValue.length()>=1) {
+			result = productRepository.search(param, pageable);
+		}else {
+			result = null;
+		}
+		
+	
+	
+		
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result));
 	}
@@ -213,6 +229,50 @@ public class ProductController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result2));
 	}
+//	cuaHiep
+	@PostMapping("getAllProductByCategory")
+	public ResponseEntity<?> getAllProductByCategory(@RequestParam(defaultValue = "0") int pageIndex,
+            @RequestParam(defaultValue = "8") int pageSize, @RequestParam(defaultValue = "1") String searchValue) {
+	     Map<String, Object> result2=null;
+			System.out.println(searchValue);
+				Pageable pageable = PageRequest.of(pageIndex, pageSize);
+				 Page<ProductEntity> pageTuts=null;
+				 if(searchValue.equalsIgnoreCase("1")) {
+					 pageTuts = this.productRepository.findAll(pageable);
+
+					 
+				 }else if (searchValue.equalsIgnoreCase("2")) {
+					 System.out.println("bong da");
+					 pageTuts=productRepository.findByCategoryEntityId((long) 1, pageable);
+					
+				}else if (searchValue.equalsIgnoreCase("3")) {
+					 System.out.println("bong ro");
+					 pageTuts=productRepository.findByCategoryEntityId((long) 2, pageable);
+				}else if (searchValue.equalsIgnoreCase("4")) {
+					System.out.println("tennis");
+					 pageTuts=productRepository.findByCategoryEntityId((long) 3, pageable);
+				}else if (searchValue.equalsIgnoreCase("5")) {
+					 pageTuts=productRepository.findByCategoryEntityId((long) 4, pageable);
+				}
+				
+				 
+			
+				 List<ProductResponseUser> listProductResponseUser=new ArrayList<ProductResponseUser>();
+				 List<ProductEntity> productEntityList = pageTuts.getContent();
+				for (ProductEntity productEntity : productEntityList) {
+					listProductResponseUser.add(mapper.map(productEntity, ProductResponseUser.class));
+				}
+			  result2 = new HashMap<>();
+			        result2.put("products", listProductResponseUser);
+			        result2.put("curerentPage", pageTuts.getNumber());
+			        result2.put("totalitems", pageTuts.getTotalElements());
+			        result2.put("totalPage", pageTuts.getTotalPages());
+			        result2.put("itemInPages", pageTuts.getNumberOfElements());
+				 
+		
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result2));
+	}
 	@PostMapping("DeleteProduct")
 	public ResponseEntity<?> DeleteProduct(@RequestParam(value = "id") long id) {
 		int pageIndextoCheck =0;
@@ -220,6 +280,66 @@ public class ProductController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!","Xóa thành công"));
 	}
+	@PostMapping("testapi")
+	public ResponseEntity<?> tespApi() {
+//		Pageable pageable = PageRequest.of(0, 8);
+//		Page<ProductEntity> page=productRepository.findByCategoryEntityId((long) 2, pageable);
+		List<ProductEntity> listProduct=productRepository.getRecentNew();
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!",listProduct));
+	}
+	@PostMapping("recentPost")
+	public ResponseEntity<?> recentPost() {
+		List<ProductEntity> listProduct=productRepository.getRecentNew();	
+		 List<ProductResponseUser> listProductResponseUser=new ArrayList<ProductResponseUser>();
+		for (ProductEntity productEntity : listProduct) {
+			listProductResponseUser.add(mapper.map(productEntity, ProductResponseUser.class));
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!",listProductResponseUser));
+	}
+	
+//	addScoreBoardEntity
+	@PostMapping("addScoreBoard")
+	public ResponseEntity<?> addScoreBoard(@RequestBody ScoreBoardRequest sc){
+		ScoreBoardEntity scoreBoard=new ScoreBoardEntity();
+		scoreBoard.setName(sc.getName());
+		scoreBoard.setImage(sc.getImage());
+//		ImageEntity image=new ImageEntity();
+//		image.setUrl(sc.getImage());
+//		imageReposiotry.save(image);
+//		scoreBoard.setImage(image);
+		List<CategoryEntity> listCategory = categoryRepository.findAll();
+		for (CategoryEntity categoryEntity : listCategory) {
+			if (categoryEntity.getId() == sc.getCategoryId()) {
+				scoreBoard.setCategoryEntity(categoryEntity);
+			}
+
+		}
+		scoreBoardRepo.save(scoreBoard);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!",scoreBoard.getName()));
+	}
+	
+	@PostMapping("showScoreBoard")
+	public ResponseEntity<?> showScoreBoard(@RequestParam("id") Long id){
+	
+		System.out.println(id);
+//		ScoreBoardEntity sc=scoreBoardRepo.findById(id).get();
+		List<ScoreBoardEntity> result=scoreBoardRepo.findByCategoryEntityId(id);
+		List<ScoreBoardResponse> result2=new ArrayList<ScoreBoardResponse>();
+		List<ScoreBoardResponse> result3=new ArrayList<ScoreBoardResponse>();
+		for (ScoreBoardEntity scoreBoardEntity : result) {
+			result2.add(mapper.map(scoreBoardEntity, ScoreBoardResponse.class));
+		}
+		for (int i = 0; i <=1; i++) {
+			result3.add(mapper.map(result2.get(i), ScoreBoardResponse.class));
+		}
+		
+		System.out.println(result3.size());
+		
+		
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!",result3));
+	}
+	
 	@PostMapping("editProduct")
 	public ResponseEntity<?> editProduct(@Valid @RequestBody ProductRequest request) {
 		// khởi tạo đối tượng
