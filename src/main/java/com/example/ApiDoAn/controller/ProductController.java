@@ -383,11 +383,10 @@ public class ProductController {
 	}
 	 public String registerEmail(String title, long id) throws MessagingException, IOException {
 	      // lấy tất cả user 
-	    	List<UserEntity> lstUser = userRepository.findAll();
-	    	for (UserEntity userEntity : lstUser) {
-	    		UserEntity user =  userRepository.findByUserID(userEntity.getId());
+		        long idUser = 8;
+	    		UserEntity user =  userRepository.findByUserID(idUser);
 	            sendEmailUtils.sendEmailWithAttachment(user, 123123 ,"http://localhost:3000/"+id,title );
-	    	}
+	    	
 	        return "Đăng kí thành công";
 	    }
 
