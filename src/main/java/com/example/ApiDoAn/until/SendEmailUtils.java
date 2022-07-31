@@ -21,29 +21,30 @@ public class SendEmailUtils {
     private JavaMailSender javaMailSender;
 
 
-    public void sendEmailWithAttachment(UserEntity user, int verify) throws MessagingException, IOException {
-
+    public void sendEmailWithAttachment(UserEntity user, int verify, String linktoDetail, String Title) throws MessagingException, IOException {
         MimeMessage msg = javaMailSender.createMimeMessage();
 
         // true = multipart message
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         String toAddress = user.getEmail();
-        String fromAddress = "damvannanh@gmail.com";
+        String fromAddress = "itdangthien0973@gmail.com";
         String senderName = "Nguyễn Đăng Thiện";
-        String subject = "Please verify your registration";
+        String subject = "Trang tin tức FE SportNews";
 
-        String content = "<p> Dear " + user.getUserName() + ",</p>" + "<br>"
+        String content = "<h3> Xin chào  " + user.getUserName() + ",</p>" + "<h3>"
                 + "\n" +
-                "Please get the code below to verify your registration:<br>"
-                + "<h3 style=\"color:red ;\">[[code]]</h3>"
+        		"<h2 style=\\\"black ;\\\">Tin tức hot mới nhất trong ngày :</h2>" + Title + "<br>"+
+                "Một số hình ảnh về bài báo"+ "<br>"+
+                "  Mời bạn đến link chi tiết:<br>"
+                + "<h3 style=\"blue ;\">[[code]]</h3>"
                 + "Thank you,<br>"
-                + "Your company hoanghiep.";
+                + "";
         helper.setFrom(fromAddress, senderName);
         helper.setTo(toAddress);
 
         helper.setSubject(subject);
         int verifyURL = verify;
-        content = content.replace("[[code]]", String.valueOf(verifyURL));
+        content = content.replace("[[code]]", String.valueOf(linktoDetail));
 
         // default = text/plain
         //helper.setText("Check attachment for image!");

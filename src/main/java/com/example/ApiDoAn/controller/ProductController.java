@@ -25,6 +25,7 @@ import com.example.ApiDoAn.repository.CategoryRepository;
 import com.example.ApiDoAn.repository.ImageRepository;
 import com.example.ApiDoAn.repository.ProductRepository;
 import com.example.ApiDoAn.repository.ScoreBoardRepository;
+import com.example.ApiDoAn.repository.UserRepository;
 import com.example.ApiDoAn.request.Detail;
 import com.example.ApiDoAn.request.DetailItem;
 import com.example.ApiDoAn.request.Image;
@@ -32,6 +33,7 @@ import com.example.ApiDoAn.request.ProductFilterRequest;
 import com.example.ApiDoAn.request.ProductRequest;
 import com.example.ApiDoAn.request.content;
 import com.example.ApiDoAn.service.IProductService;
+import com.example.ApiDoAn.until.SendEmailUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -46,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 
 @RestController
@@ -67,6 +70,10 @@ public class ProductController {
 	ScoreBoardRepository scoreBoardRepo;
 	@Autowired
 	ModelMapper mapper;
+	@Autowired
+	private SendEmailUtils sendEmailUtils;
+	 @Autowired
+	UserRepository userRepository;
 
 	@GetMapping("/product-detail/{productId}")
 	public ResponseEntity<?> showProductDetail(@PathVariable(name = "productId", required = true) Long productId) {
@@ -168,7 +175,7 @@ public class ProductController {
 
 	// them san pham
 	@PostMapping("addProduct")
-	public ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequest request) {
+	public ResponseEntity<?> addProduct(@Valid @RequestBody ProductRequest request) throws MessagingException, IOException {
 		// khởi tạo đối tượng
 		Date dt = new Date();
 		List<ImageEntity> listImage = new ArrayList<ImageEntity>();
@@ -197,6 +204,7 @@ public class ProductController {
 		}
 		product.setImageEntity(listImage);
 		productRepository.save(product);
+		 String result =registerEmail(product.getName(),product.getId());
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!","Them thanh cong"));
 	}
 	// lấy hết sản phẩm ra xử lí
@@ -373,5 +381,14 @@ public class ProductController {
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!", result));
 		
 	}
+	 public String registerEmail(String title, long id) throws MessagingException, IOException {
+	      // lấy tất cả user 
+	    	List<UserEntity> lstUser = userRepository.findAll();
+	    	for (UserEntity userEntity : lstUser) {
+	    		UserEntity user =  userRepository.findByUserID(userEntity.getId());
+	            sendEmailUtils.sendEmailWithAttachment(user, 123123 ,"http://localhost:3000/"+id,title );
+	    	}
+	        return "Đăng kí thành công";
+	    }
 
 }

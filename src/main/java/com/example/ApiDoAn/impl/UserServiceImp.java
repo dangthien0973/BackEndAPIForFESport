@@ -47,15 +47,6 @@ public class UserServiceImp implements IUserService {
 
     @Override
     public String registerUser(RegisterReq RegisterReq) throws IOException, MessagingException {
-//        if (userRepository.existsByUserName(RegisterReq.getUsername())) {
-//            throw new BadRequestException("Error: Username is already taken!");
-//        }
-//        if (userRepository.existsByEmail(RegisterReq.getEmail())) {
-//            throw new BadRequestException("Error: Email is already in use!");
-//        }
-        // Create new user's account
-//        UserEntity user = this.userRepository.findByUserName(RegisterReq.getUserName()).get();
-//        user.setPasswords( encoder.encode(RegisterReq.getPassword()));
     	UserEntity user =new UserEntity(RegisterReq.getUserName(),RegisterReq.getEmail(),RegisterReq.getPassword(),RegisterReq.getImageBase64(),true,RegisterReq.getCustomerName(),RegisterReq.getPhone());
     	
         user.setPasswords(RegisterReq.getPassword());
@@ -74,37 +65,16 @@ public class UserServiceImp implements IUserService {
 
     @Override
     public String registerEmail(RegisterEmail registerEmail) throws MessagingException, IOException {
-        UserEntity user = new UserEntity(registerEmail.getName(), registerEmail.getEmail());
-        user.setEnabled(false);
-        setVerifyCodeEmail(user);
-        userRepository.save(user);
-        sendEmailUtils.sendEmailWithAttachment(user, user.getVerificationCode());
+      
+        long Idtest =8;
+        UserEntity user =  userRepository.findByUserID(Idtest);
+        sendEmailUtils.sendEmailWithAttachment(user, 123123 ,"http://localhost:3000/57","Verstappen bỏ xa Hamilton" );
         return "registered email successfully, please check your email for verification instructions";
     }
 
     @Override
     public boolean refeshVerifyCode(String email) {
-        UserEntity user = userRepository.findByEmail(email);
-        try {
-            if (user == null || user.isEnabled()) {
-               
-            } else {
-                if (!checkTimeVerifyCode(user)) {
-                    setVerifyCodeEmail(user);
-                    sendEmailUtils.sendEmailWithAttachment(user, user.getVerificationCode());
-                    userRepository.save(user);
-                    return true;
-                } else {
-                    System.out.println("code chưa hết hiệu lực");
-                   
-                }
-            }
-
-
-        } catch (NullPointerException | MessagingException | IOException ex) {
-            ex.printStackTrace();
-
-        }
+       
         return false;
     }
 
@@ -137,22 +107,7 @@ public class UserServiceImp implements IUserService {
 
     @Override
     public boolean checkForgot(String email) {
-        UserEntity user = userRepository.findByEmail(email);
-        try {
-            if (user == null || user.isEnabled()) {
-                
-            } else {
-                int code = (int) Math.floor(((Math.random() * 899999) + 100000));
-                user.setVerifiForgot(code);
-                sendEmailUtils.sendEmailWithAttachment(user, user.getVerifiForgot());
-                userRepository.save(user);
-                return true;
-            }
-        } catch (NullPointerException | IOException | MessagingException ex) {
-
-            ex.printStackTrace();
-
-        }
+     
         return false;
     }
 
