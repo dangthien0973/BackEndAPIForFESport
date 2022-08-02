@@ -138,7 +138,7 @@ public class ProductController {
 		System.out.println("searchProduct");
 		System.out.println(searchValue.length());
 		Page<ProductEntity> result =null;
-		if(searchValue.length()>=1) {
+		if(searchValue.length()>1) {
 			result = productRepository.search(param, pageable);
 		}else {
 			result = null;
@@ -350,7 +350,7 @@ public class ProductController {
 		System.out.println(result3.size());
 		
 		
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!",result3));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.value(), "successfully!",result));
 	}
 	
 	@PostMapping("editProduct")

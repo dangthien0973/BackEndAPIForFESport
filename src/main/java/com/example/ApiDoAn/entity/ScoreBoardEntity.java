@@ -7,6 +7,8 @@ import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +28,7 @@ public class ScoreBoardEntity extends BaseEntity{
 	double score;
 	@ManyToOne
 	@JoinColumn(name = "categoryId")
+	@JsonIgnore
 	private CategoryEntity categoryEntity;
 	public String getName() {
 		return name;

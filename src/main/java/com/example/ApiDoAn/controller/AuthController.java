@@ -167,13 +167,13 @@ public class AuthController {
         if (userRepository.existsByUserName(signUpRequest.getUserName())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageReponse("Error: Username is already taken!"));
+                    .body(new MessageReponse("tên đăng nhập đã tồn tại!"));
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageReponse("Error: Email is already in use!"));
+                    .body(new MessageReponse("Error: Email đã được sử dụng!"));
         }
         // tạo contrustor để lưu mã hóa thông tin 
         UserEntity user = new UserEntity(signUpRequest.getUserName(), signUpRequest.getEmail(),
@@ -301,5 +301,16 @@ public class AuthController {
 			}
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseObject(HttpStatus.OK.value(), "successfully!",resultCount));
+		}
+		@PostMapping("/checkEmail")
+		public ResponseEntity<?> checkEmail(@RequestParam(value = "email") String email) {
+			 if (userRepository.existsByEmail(email)) {
+				 return ResponseEntity.ok(new MessageReponse("2")); 
+		        }
+			 else {
+			 
+				 return ResponseEntity.ok(new MessageReponse("1")); 
+			 }
+
 		}
 }

@@ -1,5 +1,6 @@
 package com.example.ApiDoAn.reponse;
 
+import java.util.Date;
 import java.util.List;
 
 import com.example.ApiDoAn.entity.CategoryEntity;
@@ -11,14 +12,17 @@ public class ProductResponseUser {
 	private String descriptions;
 	private List<ImageResponseUser> ImageEntity;
 	private CategoryResponse categoryEntity;
+	 private Date dateCreated;
+	
 	public ProductResponseUser(Long id, String name, String descriptions, List<ImageResponseUser> imageEntity,
-			CategoryResponse categoryEntity) {
+			CategoryResponse categoryEntity, Date dateCreated) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.descriptions = descriptions;
 		ImageEntity = imageEntity;
 		this.categoryEntity = categoryEntity;
+		this.dateCreated = dateCreated;
 	}
 	public ProductResponseUser() {
 		super();
@@ -52,6 +56,13 @@ public class ProductResponseUser {
 	}
 	public void setCategoryEntity(CategoryResponse categoryEntity) {
 		this.categoryEntity = categoryEntity;
+	}
+	
+	public Date getDateCreated() {
+		return dateCreated;
+	}
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
 	}
 	@Override
 	public String toString() {
