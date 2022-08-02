@@ -74,12 +74,13 @@ public class ProductController {
 	private SendEmailUtils sendEmailUtils;
 	 @Autowired
 	UserRepository userRepository;
-
+	 @Autowired
+	 ImageRepository imageRepository;
 	@GetMapping("/product-detail/{productId}")
 	public ResponseEntity<?> showProductDetail(@PathVariable(name = "productId", required = true) Long productId) {
 		Optional<ProductEntity> result = productRepository.findById(productId);
 //		hiep
-		ProductResponseUser productResponse=mapper.map(result, ProductResponseUser.class);
+		ProductResponseUser productResponse= mapper.map(result, ProductResponseUser.class);
 		if (result == null)
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 					.body(new ResponseObject(HttpStatus.NOT_FOUND.value(), "Not found product", ""));
@@ -88,7 +89,6 @@ public class ProductController {
 				.body(new ResponseObject(HttpStatus.OK.value(), "product detail", result));
 
 	}
-
 	// pending
 	@GetMapping("/toolcrawlData")
 	public ResponseEntity<?> toolsaveProduct(@RequestParam(required = true) String uri) throws IOException {
@@ -283,7 +283,11 @@ public class ProductController {
 	}
 	@PostMapping("DeleteProduct")
 	public ResponseEntity<?> DeleteProduct(@RequestParam(value = "id") long id) {
-		int pageIndextoCheck =0;
+		List<ImageEntity> listImage=imageRepository.listImageByProduct(id);	
+
+		for (ImageEntity image : listImage) {
+			imageRepository.deleteById(image.getId());
+		}
 		productRepository.deleteById(id);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseObject(HttpStatus.OK.value(), "successfully!","Xóa thành công"));
@@ -335,7 +339,8 @@ public class ProductController {
 		List<ScoreBoardEntity> result=scoreBoardRepo.findByCategoryEntityId(id);
 		List<ScoreBoardResponse> result2=new ArrayList<ScoreBoardResponse>();
 		List<ScoreBoardResponse> result3=new ArrayList<ScoreBoardResponse>();
-		for (ScoreBoardEntity scoreBoardEntity : result) {
+		for (ScoreBoardEntity scoreBoardEntity : result) 
+		{
 			result2.add(mapper.map(scoreBoardEntity, ScoreBoardResponse.class));
 		}
 		for (int i = 0; i <=1; i++) {
