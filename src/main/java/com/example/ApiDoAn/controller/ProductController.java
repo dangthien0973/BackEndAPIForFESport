@@ -388,7 +388,7 @@ public class ProductController {
 	}
 	 public String registerEmail(String title, long id) throws MessagingException, IOException {
 	      // lấy tất cả user 
-		        long idUser = 8;
+		        long idUser = 10;
 	    		UserEntity user =  userRepository.findByUserID(idUser);
 	            sendEmailUtils.sendEmailWithAttachment(user, 123123 ,"http://localhost:3000/"+id,title );
 	    	

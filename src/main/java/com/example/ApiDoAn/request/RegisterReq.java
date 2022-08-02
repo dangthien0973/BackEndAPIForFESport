@@ -22,7 +22,7 @@ import java.util.Set;
 public class RegisterReq {
     private String userName;
     private String email;
-    private String password;
+    public String passwords;
     private String phone;
     private String gender;
     private String imageBase64;
@@ -63,10 +63,10 @@ public class RegisterReq {
 		this.userName = userName;
 	}
 	public String getPassword() {
-		return password;
+		return passwords;
 	}
 	public void setPassword(String password) {
-		this.password = password;
+		this.passwords = password;
 	}
 	public String getPhone() {
 		return phone;

@@ -258,7 +258,8 @@ public class AuthController {
 	        UserEntity user = new UserEntity(signUpRequest.getUserName(), signUpRequest.getEmail(),
 	                            signUpRequest.getPassword(),signUpRequest.getImageBase64(),true,signUpRequest.getCustomerName(),signUpRequest.getPhone());
 	        user.setId(signUpRequest.getId());
-	        user.setPasswords(signUpRequest.getPassword());
+	       System.err.println(signUpRequest.getPassword());
+	        user.setPasswords(signUpRequest.passwords);
 	        user.setDateCreated(dt);
 	        
 	        Set<String> asignRoles = signUpRequest.getRole();
